@@ -1,28 +1,32 @@
 - name: docker build and push
-  hosts: remote  # Replace with the hostname or IP address of your target server
-  become: yes  # Run tasks with sudo privileges
+  hosts: remote
+  become: yes
 
   tasks:
     - name: Update apt package cache
       apt:
-        update_cache: yes   
+        update_cache: yes
 
-    - name: Build Docker Image
-      command: docker build -t petstore .
-      args:
-        chdir: /var/lib/jenkins/workspace/petstore
+    - name: Build Docker image
+      community.docker.docker_image:
+        name: petstore
+        path: /var/lib/jenkins/workspace/petstore
+        tag: latest
+        push: no
 
-    - name: tag image
-      command: docker tag petstore:latest pooja781/petstore:latest 
+    - name: Tag Docker image
+      command: docker tag petstore:latest pooja781/petstore:latest
 
     - name: Log in to Docker Hub
       community.docker.docker_login:
-        docker_login:
         username: "{{ docker_username }}"
         password: "{{ docker_password }}"
 
-    - name: Push image
-      command: docker push pooja781/petstore:latest
+    - name: Push Docker image
+      community.docker.docker_image:
+        name: pooja781/petstore
+        tag: latest
+        push: yes
 
     - name: Run container
       command: docker run -d --name pet1 -p 8081:8080 pooja781/petstore:latest
