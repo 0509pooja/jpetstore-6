@@ -1,5 +1,5 @@
 - name: docker build and push
-  hosts: Remote
+  hosts: remote
   become: yes
 
   tasks:
