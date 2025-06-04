@@ -23,7 +23,7 @@
         password: <password>
 
     - name: Push image
-      command: pooja781/petstore:latest
+      command: docker push pooja781/petstore:latest
 
     - name: Run container
       command: docker run -d --name pet1 -p 8081:8080 pooja781/petstore:latest
